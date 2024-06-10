@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.navigator a {
+  font-size: larger;
+  font-weight: 600;
+}
+
+.navigator a:hover {
+  border-bottom: 2px solid #e45c16;
+}
+
+.active {
+  border-bottom: 2px solid #e45c16;
+}
