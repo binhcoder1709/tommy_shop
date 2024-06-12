@@ -8,7 +8,7 @@ export default function Header() {
         {/* top header */}
         <TopHeader />
         {/* bottom header */}
-        <BottomHeader/>
+        <BottomHeader />
       </header>
     </>
   );

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import DropdownItem from "../../../../components/DropdownItem";
 
 export default function TopHeader() {
   return (
@@ -8,10 +9,11 @@ export default function TopHeader() {
           <span className="text-white">Chào mừng bạn đến với Tommy Shop</span>
         </div>
         <div className="flex text-white">
-          <Link to={"#"}>Đăng ký</Link>
+          <Link to={"/register"}>Đăng ký</Link>
           <span>/</span>
-          <Link to={"#"}>Đăng nhập</Link>
+          <Link to={"/login"}>Đăng nhập</Link>
         </div>
+        {/* <DropdownItem buttonText="hello"/> */}
       </div>
     </>
   );

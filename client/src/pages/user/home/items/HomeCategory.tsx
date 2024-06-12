@@ -121,9 +121,10 @@ const carouselStyle:CSSProperties = {
           <MenuList menuListItem={menuListItems} />
         </div>
         {/* slide */}
-        <div>
+        {/* <div>
           <CarouselItem carouselItem={carouselItems} contentStyle={carouselStyle}/>
-        </div>
+        </div> */}
+        {/* home content 1 */}
       </div>
     </>
   );
