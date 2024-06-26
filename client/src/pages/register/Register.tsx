@@ -1,7 +1,10 @@
 import { FC } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { RegisterCredentials, register } from "../../services/auth.service";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../redux/store";
 import { notification } from "antd";
 
 // tạo interface cho form validation
@@ -10,14 +13,6 @@ interface FormValue {
   email: string;
   password: string;
   confirmPassword: string;
-}
-
-// tạo interface cho dữ liệu gửi về api register
-export interface IRegister {
-  userName: string;
-  email: string;
-  password: string;
-  role: number;
 }
 
 // Xác định schema xác thực
@@ -36,8 +31,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const Register: FC = () => {
-  const navigate = useNavigate();
-
+  const dispatch = useDispatch<AppDispatch>();
   const formik = useFormik<FormValue>({
     initialValues: {
       userName: "",
@@ -47,28 +41,28 @@ const Register: FC = () => {
     },
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
-      const data: IRegister = {
-        userName: values.userName,
+      const data: RegisterCredentials = {
+        user_name: values.userName,
         email: values.email,
         password: values.password,
-        role: 1,
       };
 
-    //   try {
-    //     const resonse = await baseUrl.post("auth/register", data);
-    //     if (resonse.status === 201) {
-    //       notification.success({ message: "Đăng ký thành công" });
-    //       resetForm();
-    //       setTimeout(() => {
-    //         navigate("/login");
-    //       }, 2000);
-    //     }
-    //   } catch (error) {
-    //     console.error("Error", error);
-    //     notification.error({
-    //       message: "Có lỗi xảy ra trong quá trình đăng ký",
-    //     });
-    //   }
+      const result = await dispatch(register(data));
+      if (register.fulfilled.match(result)) {
+        notification.success({ message: "Đăng ký thành công" });
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 2000);
+        resetForm();
+      } else {
+        if (result.payload) {
+          notification.error({ message: result.payload as string });
+        } else {
+          notification.error({
+            message: "Có lỗi xảy ra trong quá trình đăng ký",
+          });
+        }
+      }
     },
   });
 

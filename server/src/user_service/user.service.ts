@@ -10,10 +10,13 @@ export class UserService {
     const user = await connection
       .getRepository(User)
       .findOneBy({ user_id: id });
-    if (user) {
-      return user;
-    } else {
-      return null;
-    }
+    return user;
+  };
+
+  findByEmail = async (email: string): Promise<User | null> => {
+    const user = await connection
+      .getRepository(User)
+      .findOneBy({ email: email });
+    return user;
   };
 }

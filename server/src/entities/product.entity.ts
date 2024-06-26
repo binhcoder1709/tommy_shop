@@ -5,25 +5,26 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 
-@Entity("users")
-export class User {
+@Entity("products")
+export class Product {
   @PrimaryGeneratedColumn("uuid")
-  user_id!: string;
+  product_id!: string;
 
   @Column()
-  user_name!: string;
+  product_name!: string;
 
   @Column()
-  email!: string;
+  quantity!: number;
 
   @Column()
-  password!: string;
+  price!: number;
 
-  @Column({ default: 1 })
-  role!: number;
+  @Column()
+  type!: string;
+
+  @Column()
+  description!: string;
 
   @CreateDateColumn({ type: "datetime", default: () => "current_timestamp" })
   created_at!: Date;
-
-  
 }

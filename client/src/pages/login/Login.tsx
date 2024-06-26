@@ -2,6 +2,10 @@ import { FC } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Link } from "react-router-dom";
+import Cookies from "js-cookie";
+import { useDispatch } from "react-redux";
+import { LoginCredentials, login } from "../../services/auth.service";
+import { AppDispatch } from "../../redux/store";
 import { notification } from "antd";
 
 // Định nghĩa giao diện FormValue
@@ -10,10 +14,6 @@ interface FormValue {
   password: string;
 }
 
-interface ILogin {
-  email: string;
-  password: string;
-}
 // Xác định schema xác thực
 const validationSchema = Yup.object().shape({
   email: Yup.string().email("Email không hợp lệ").required("Email là bắt buộc"),
@@ -23,6 +23,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const Login: FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const formik = useFormik<FormValue>({
     initialValues: {
       email: "",
@@ -30,29 +31,28 @@ const Login: FC = () => {
     },
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
-      const data: ILogin = {
+      const data: LoginCredentials = {
         email: values.email,
         password: values.password,
       };
+      const resultAction = await dispatch(login(data));
 
-    //   try {
-    //     const response = await baseUrl.post("auth/login", data);
-    //     if (response.status == 200) {
-    //       Cookies.set("AT", response.data.accessToken, {expires: 7});
-    //       Cookies.set("RT", response.data.refreshToken, {expires: 7});
-    //       resetForm();
-    //       notification.success({ message: "Đăng nhập thành công" });
-    //       setTimeout(() => {
-    //         window.location.href = "/";
-    //       }, 2000);
-    //     }
-    //   } catch (error) {
-    //     console.error("Error", error);
-
-    //     notification.error({
-    //       message: "Có lỗi xảy ra trong quá trình đăng nhập",
-    //     });
-    //   }
+      if (login.fulfilled.match(resultAction)) {
+        notification.success({ message: "Đăng nhập thành công" });
+        Cookies.set("AT", resultAction.payload.token, { expires: 0.02 });
+        resetForm();
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 2000);
+      } else {
+        if (resultAction.payload) {
+          notification.error({ message: resultAction.payload as string });
+        } else {
+          notification.error({
+            message: "Có lỗi xảy ra trong quá trình đăng nhập",
+          });
+        }
+      }
     },
   });
 
